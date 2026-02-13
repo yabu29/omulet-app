@@ -27,7 +27,47 @@ GitHubリポジトリの Settings > Secrets and variables > Actions で以下の
 
 **注意**: `.p8`ファイルは一度しかダウンロードできないため、安全に保管してください。
 
-### 3. fastlaneのAppfile設定
+### 3. fastlane matchのセットアップ（証明書とプロビジョニングプロファイルの管理）
+
+このプロジェクトでは、`fastlane match`を使用して証明書とプロビジョニングプロファイルを管理します。
+
+#### 3.1. 証明書用のGitリポジトリの作成
+
+1. GitHubで新しい**プライベートリポジトリ**を作成（例: `omulet-app-certificates`）
+2. このリポジトリは証明書とプロビジョニングプロファイルを暗号化して保存するために使用します
+
+#### 3.2. Matchfileの設定
+
+`ios/fastlane/Matchfile`が既に作成されています。証明書用のGitリポジトリURLを確認・更新してください：
+
+```ruby
+git_url("https://github.com/yabu29/omulet-app-certificates.git")  # あなたのリポジトリURLに変更
+```
+
+#### 3.3. ローカルで証明書とプロビジョニングプロファイルを生成
+
+初回のみ、ローカルで以下のコマンドを実行して証明書とプロビジョニングプロファイルを生成します：
+
+```bash
+cd ios
+bundle exec fastlane match appstore
+```
+
+このコマンドで：
+- Apple Developer Portalに証明書とプロビジョニングプロファイルが作成されます
+- 指定したGitリポジトリに暗号化して保存されます
+- 暗号化パスワードの入力が求められます（後でGitHub Secretsに設定します）
+
+**重要**: 暗号化パスワードは安全に保管してください。CI/CDで使用します。
+
+#### 3.4. GitHub Secretsの追加設定
+
+GitHubリポジトリの Settings > Secrets and variables > Actions で以下を追加：
+
+- `MATCH_PASSWORD`: matchで使用する暗号化パスワード（上記で設定したパスワード）
+- `APP_STORE_CONNECT_ISSUER_ID`: App Store Connect API KeyのIssuer ID（既に設定済みの場合は確認のみ）
+
+### 4. fastlaneのAppfile設定
 
 `ios/fastlane/Appfile` を編集して、以下を設定：
 
@@ -116,3 +156,25 @@ version: 1.0.0+1  # バージョン名 + ビルド番号
 - Xcodeのバージョンを確認
 - Flutterのバージョンを確認（`flutter --version`）
 - 証明書とプロビジョニングプロファイルが正しく設定されているか確認
+
+### 署名エラー（No profiles for 'com.leo.omuee' were found）
+
+このエラーは、CI環境で証明書とプロビジョニングプロファイルが見つからない場合に発生します。
+
+**解決方法**:
+
+1. **matchのセットアップが完了しているか確認**
+   - ローカルで`bundle exec fastlane match appstore`を実行して証明書を生成済みか確認
+   - 証明書用のGitリポジトリが正しく設定されているか確認
+
+2. **GitHub Secretsの確認**
+   - `MATCH_PASSWORD`が正しく設定されているか確認
+   - `APP_STORE_CONNECT_API_KEY_CONTENT`、`APP_STORE_CONNECT_KEY_ID`、`APP_STORE_CONNECT_ISSUER_ID`が設定されているか確認
+
+3. **Matchfileの確認**
+   - `ios/fastlane/Matchfile`の`git_url`が正しいリポジトリを指しているか確認
+   - リポジトリがプライベートで、アクセス可能か確認
+
+4. **証明書用リポジトリへのアクセス**
+   - CI環境から証明書用リポジトリにアクセスできるか確認
+   - 必要に応じて、Deploy KeyまたはPersonal Access Tokenを設定

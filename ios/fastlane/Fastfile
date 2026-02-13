@@ -6,6 +6,14 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
+    # Match: Get certificates and provisioning profiles
+    # readonly: true for CI/CD environments to prevent creating new certificates
+    match(
+      type: "appstore",
+      readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
+      app_identifier: "com.leo.omuee"
+    )
+    
     # Get version from pubspec.yaml
     version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
     build_number = version_line.split('+').last.to_i
@@ -30,6 +38,13 @@ platform :ios do
 
   desc "Build and upload to App Store"
   lane :release do
+    # Match: Get certificates and provisioning profiles
+    match(
+      type: "appstore",
+      readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
+      app_identifier: "com.leo.omuee"
+    )
+    
     # Get version from pubspec.yaml
     version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
     build_number = version_line.split('+').last.to_i
@@ -55,6 +70,13 @@ platform :ios do
 
   desc "Build iOS app only (no upload)"
   lane :build do
+    # Match: Get certificates and provisioning profiles
+    match(
+      type: "appstore",
+      readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
+      app_identifier: "com.leo.omuee"
+    )
+    
     # Get version from pubspec.yaml
     version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
     build_number = version_line.split('+').last.to_i
