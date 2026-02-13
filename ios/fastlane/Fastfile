@@ -31,6 +31,10 @@ platform :ios do
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
     
+    # Pre-build CocoaPods to avoid hang during flutter build
+    UI.message("Installing CocoaPods dependencies...")
+    sh("cd ios && pod install --repo-update")
+    
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
     UI.message("Building with verbose logging. Log will be saved to: #{build_log_path}")
@@ -77,6 +81,10 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
+    
+    # Pre-build CocoaPods to avoid hang during flutter build
+    UI.message("Installing CocoaPods dependencies...")
+    sh("cd ios && pod install --repo-update")
     
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
@@ -125,6 +133,10 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
+    
+    # Pre-build CocoaPods to avoid hang during flutter build
+    UI.message("Installing CocoaPods dependencies...")
+    sh("cd ios && pod install --repo-update")
     
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
