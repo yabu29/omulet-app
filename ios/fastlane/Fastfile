@@ -1,0 +1,70 @@
+# Fastfile for iOS app distribution
+# Documentation: https://docs.fastlane.tools/actions/
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # Get version from pubspec.yaml
+    version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
+    build_number = version_line.split('+').last.to_i
+    
+    # Format build number as 3-digit zero-padded (001, 002, etc.)
+    formatted_build_number = sprintf("%03d", build_number)
+    
+    # Flutter build with formatted build number
+    sh("cd ../.. && flutter clean")
+    sh("cd ../.. && flutter pub get")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+    
+    # Upload to TestFlight
+    upload_to_testflight(
+      api_key_path: ENV["APP_STORE_CONNECT_API_KEY_PATH"],
+      ipa: "../../build/ios/ipa/omulet_app.ipa",
+      skip_waiting_for_build_processing: true,
+      skip_submission: true,
+      distribute_external: false
+    )
+  end
+
+  desc "Build and upload to App Store"
+  lane :release do
+    # Get version from pubspec.yaml
+    version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
+    build_number = version_line.split('+').last.to_i
+    
+    # Format build number as 3-digit zero-padded (001, 002, etc.)
+    formatted_build_number = sprintf("%03d", build_number)
+    
+    # Flutter build with formatted build number
+    sh("cd ../.. && flutter clean")
+    sh("cd ../.. && flutter pub get")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+    
+    # Upload to App Store
+    upload_to_app_store(
+      api_key_path: ENV["APP_STORE_CONNECT_API_KEY_PATH"],
+      ipa: "../../build/ios/ipa/omulet_app.ipa",
+      skip_metadata: false,
+      skip_screenshots: true,
+      submit_for_review: false,
+      automatic_release: false
+    )
+  end
+
+  desc "Build iOS app only (no upload)"
+  lane :build do
+    # Get version from pubspec.yaml
+    version_line = sh("cd ../.. && grep '^version:' pubspec.yaml | head -1", log: false).strip
+    build_number = version_line.split('+').last.to_i
+    
+    # Format build number as 3-digit zero-padded (001, 002, etc.)
+    formatted_build_number = sprintf("%03d", build_number)
+    
+    # Flutter build with formatted build number
+    sh("cd ../.. && flutter clean")
+    sh("cd ../.. && flutter pub get")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+  end
+end
