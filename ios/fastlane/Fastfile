@@ -13,9 +13,10 @@ platform :ios do
       readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
       app_identifier: "com.leo.omuee"
     }
-    # Use App Store Connect API Key in CI environment
-    if ENV["APP_STORE_CONNECT_API_KEY_PATH"] && !ENV["APP_STORE_CONNECT_API_KEY_PATH"].empty?
-      match_options[:api_key_path] = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    # Use App Store Connect API Key in CI environment (only if path is set and file exists)
+    api_key_path = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    if api_key_path && !api_key_path.to_s.strip.empty? && File.exist?(api_key_path.to_s)
+      match_options[:api_key_path] = api_key_path
     end
     match(match_options)
     
@@ -49,9 +50,10 @@ platform :ios do
       readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
       app_identifier: "com.leo.omuee"
     }
-    # Use App Store Connect API Key in CI environment
-    if ENV["APP_STORE_CONNECT_API_KEY_PATH"] && !ENV["APP_STORE_CONNECT_API_KEY_PATH"].empty?
-      match_options[:api_key_path] = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    # Use App Store Connect API Key in CI environment (only if path is set and file exists)
+    api_key_path = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    if api_key_path && !api_key_path.to_s.strip.empty? && File.exist?(api_key_path.to_s)
+      match_options[:api_key_path] = api_key_path
     end
     match(match_options)
     
@@ -86,9 +88,10 @@ platform :ios do
       readonly: ENV["CI"] == "true" || ENV["GITHUB_ACTIONS"] == "true",
       app_identifier: "com.leo.omuee"
     }
-    # Use App Store Connect API Key in CI environment
-    if ENV["APP_STORE_CONNECT_API_KEY_PATH"] && !ENV["APP_STORE_CONNECT_API_KEY_PATH"].empty?
-      match_options[:api_key_path] = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    # Use App Store Connect API Key in CI environment (only if path is set and file exists)
+    api_key_path = ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    if api_key_path && !api_key_path.to_s.strip.empty? && File.exist?(api_key_path.to_s)
+      match_options[:api_key_path] = api_key_path
     end
     match(match_options)
     
