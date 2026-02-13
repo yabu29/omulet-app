@@ -30,7 +30,7 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
-    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store")
     
     # Upload to TestFlight
     upload_to_testflight(
@@ -67,7 +67,7 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
-    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store")
     
     # Upload to App Store
     upload_to_app_store(
@@ -105,6 +105,6 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
-    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number}")
+    sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store")
   end
 end
