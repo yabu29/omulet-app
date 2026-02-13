@@ -65,6 +65,7 @@ jobs:
         run: |
           bundle install
 
+      # Setup App Store Connect API Key (used by all deployment steps)
       - name: Setup App Store Connect API Key
         working-directory: ios
         env:
@@ -95,56 +96,32 @@ jobs:
           (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
 
+      # For PRs: build only (no TestFlight upload) - sanity check
       - name: Build iOS app
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
-          # Generate .p8 file from secret if not exists
-          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
-            mkdir -p fastlane
-            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
-            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
-          fi
           bundle exec fastlane build
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'build')
 
+      # dev/main branches: Build and upload to TestFlight
       - name: Upload to TestFlight
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
-          # Generate .p8 file from secret if not exists
-          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
-            mkdir -p fastlane
-            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
-            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
-          fi
           bundle exec fastlane beta
         if: |
           (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
           (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'testflight'))
 
+      # main branch only: Build and upload to App Store
       - name: Upload to App Store
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
-          # Generate .p8 file from secret if not exists
-          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
-            mkdir -p fastlane
-            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
-            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
-          fi
           bundle exec fastlane release
         if: |
           (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
