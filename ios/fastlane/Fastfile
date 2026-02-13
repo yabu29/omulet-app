@@ -41,8 +41,8 @@ platform :ios do
     
     # Archive and export using xcodebuild directly
     UI.message("Archiving app...")
-    archive_path = "../../build/ios/Runner.xcarchive"
-    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    archive_path = "../build/ios/Runner.xcarchive"
+    sh("cd ../.. && cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
     
     # Export IPA
     UI.message("Exporting IPA...")
@@ -66,8 +66,8 @@ platform :ios do
       </plist>
     XML
     File.write(export_options_plist_path, export_options_content)
-    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
-    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
+    sh("cd ../.. && cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ../.. && mv build/ios/ipa/Runner.ipa build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
     
     # Upload to TestFlight
     upload_to_testflight(
@@ -115,8 +115,8 @@ platform :ios do
     
     # Archive and export using xcodebuild directly
     UI.message("Archiving app...")
-    archive_path = "../../build/ios/Runner.xcarchive"
-    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    archive_path = "../build/ios/Runner.xcarchive"
+    sh("cd ../.. && cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
     
     # Export IPA
     UI.message("Exporting IPA...")
@@ -140,8 +140,8 @@ platform :ios do
       </plist>
     XML
     File.write(export_options_plist_path, export_options_content)
-    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
-    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
+    sh("cd ../.. && cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ../.. && mv build/ios/ipa/Runner.ipa build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
     
     # Upload to App Store
     upload_to_app_store(
@@ -190,8 +190,8 @@ platform :ios do
     
     # Archive and export using xcodebuild directly
     UI.message("Archiving app...")
-    archive_path = "../../build/ios/Runner.xcarchive"
-    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    archive_path = "../build/ios/Runner.xcarchive"
+    sh("cd ../.. && cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
     
     # Export IPA
     UI.message("Exporting IPA...")
@@ -215,7 +215,7 @@ platform :ios do
       </plist>
     XML
     File.write(export_options_plist_path, export_options_content)
-    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
-    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
+    sh("cd ../.. && cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ../.. && mv build/ios/ipa/Runner.ipa build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
   end
 end
