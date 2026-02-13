@@ -33,18 +33,41 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ../.. && cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install")
     
-    # Build with verbose logging to identify hang issues
-    build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
-    UI.message("Building with verbose logging. Log will be saved to: #{build_log_path}")
-    begin
-      sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store --verbose 2>&1 | tee #{build_log_path}")
-    rescue => ex
-      UI.error("Build failed. Showing last 200 lines of build log:")
-      sh("tail -200 #{build_log_path} || true")
-      raise ex
-    end
+    # Build iOS app without codesigning first (to avoid xcodebuild -showBuildSettings hang)
+    UI.message("Building iOS app...")
+    sh("cd ../.. && flutter build ios --release --build-number=#{formatted_build_number} --no-codesign")
+    
+    # Archive and export using xcodebuild directly
+    UI.message("Archiving app...")
+    archive_path = "../../build/ios/Runner.xcarchive"
+    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    
+    # Export IPA
+    UI.message("Exporting IPA...")
+    export_options_plist_path = File.join(Dir.pwd, "..", "exportOptions.plist")
+    export_options_content = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+          <key>method</key>
+          <string>app-store</string>
+          <key>teamID</key>
+          <string>W92T9A5F6P</string>
+          <key>uploadBitcode</key>
+          <false/>
+          <key>uploadSymbols</key>
+          <true/>
+          <key>compileBitcode</key>
+          <false/>
+      </dict>
+      </plist>
+    XML
+    File.write(export_options_plist_path, export_options_content)
+    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
     
     # Upload to TestFlight
     upload_to_testflight(
@@ -84,18 +107,41 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ../.. && cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install")
     
-    # Build with verbose logging to identify hang issues
-    build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
-    UI.message("Building with verbose logging. Log will be saved to: #{build_log_path}")
-    begin
-      sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store --verbose 2>&1 | tee #{build_log_path}")
-    rescue => ex
-      UI.error("Build failed. Showing last 200 lines of build log:")
-      sh("tail -200 #{build_log_path} || true")
-      raise ex
-    end
+    # Build iOS app without codesigning first (to avoid xcodebuild -showBuildSettings hang)
+    UI.message("Building iOS app...")
+    sh("cd ../.. && flutter build ios --release --build-number=#{formatted_build_number} --no-codesign")
+    
+    # Archive and export using xcodebuild directly
+    UI.message("Archiving app...")
+    archive_path = "../../build/ios/Runner.xcarchive"
+    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    
+    # Export IPA
+    UI.message("Exporting IPA...")
+    export_options_plist_path = File.join(Dir.pwd, "..", "exportOptions.plist")
+    export_options_content = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+          <key>method</key>
+          <string>app-store</string>
+          <key>teamID</key>
+          <string>W92T9A5F6P</string>
+          <key>uploadBitcode</key>
+          <false/>
+          <key>uploadSymbols</key>
+          <true/>
+          <key>compileBitcode</key>
+          <false/>
+      </dict>
+      </plist>
+    XML
+    File.write(export_options_plist_path, export_options_content)
+    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
     
     # Upload to App Store
     upload_to_app_store(
@@ -136,17 +182,40 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ../.. && cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install")
     
-    # Build with verbose logging to identify hang issues
-    build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
-    UI.message("Building with verbose logging. Log will be saved to: #{build_log_path}")
-    begin
-      sh("cd ../.. && flutter build ipa --release --build-number=#{formatted_build_number} --export-method app-store --verbose 2>&1 | tee #{build_log_path}")
-    rescue => ex
-      UI.error("Build failed. Showing last 200 lines of build log:")
-      sh("tail -200 #{build_log_path} || true")
-      raise ex
-    end
+    # Build iOS app without codesigning first (to avoid xcodebuild -showBuildSettings hang)
+    UI.message("Building iOS app...")
+    sh("cd ../.. && flutter build ios --release --build-number=#{formatted_build_number} --no-codesign")
+    
+    # Archive and export using xcodebuild directly
+    UI.message("Archiving app...")
+    archive_path = "../../build/ios/Runner.xcarchive"
+    sh("cd ios && xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath #{archive_path} archive CODE_SIGN_IDENTITY=\"Apple Distribution\" CODE_SIGN_STYLE=Manual PROVISIONING_PROFILE_SPECIFIER=\"69c9c1f5-a031-40a6-91c1-6eca9a28c625\"")
+    
+    # Export IPA
+    UI.message("Exporting IPA...")
+    export_options_plist_path = File.join(Dir.pwd, "..", "exportOptions.plist")
+    export_options_content = <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+          <key>method</key>
+          <string>app-store</string>
+          <key>teamID</key>
+          <string>W92T9A5F6P</string>
+          <key>uploadBitcode</key>
+          <false/>
+          <key>uploadSymbols</key>
+          <true/>
+          <key>compileBitcode</key>
+          <false/>
+      </dict>
+      </plist>
+    XML
+    File.write(export_options_plist_path, export_options_content)
+    sh("cd ios && xcodebuild -exportArchive -archivePath #{archive_path} -exportPath ../../build/ios/ipa -exportOptionsPlist exportOptions.plist")
+    sh("cd ios && mv ../../build/ios/ipa/Runner.ipa ../../build/ios/ipa/omulet_app.ipa 2>/dev/null || true")
   end
 end
