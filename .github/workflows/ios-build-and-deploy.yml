@@ -93,10 +93,16 @@ jobs:
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_PATH: ${{ env.APP_STORE_CONNECT_API_KEY_PATH }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
+          # Generate .p8 file from secret if not exists
+          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
+            mkdir -p fastlane
+            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
+          fi
           bundle exec fastlane build
         if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'build')
 
@@ -104,10 +110,16 @@ jobs:
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_PATH: ${{ env.APP_STORE_CONNECT_API_KEY_PATH }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
+          # Generate .p8 file from secret if not exists
+          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
+            mkdir -p fastlane
+            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
+          fi
           bundle exec fastlane beta
         if: |
           (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
@@ -117,10 +129,16 @@ jobs:
         working-directory: ios
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APP_STORE_CONNECT_API_KEY_PATH: ${{ env.APP_STORE_CONNECT_API_KEY_PATH }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
+          # Generate .p8 file from secret if not exists
+          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
+            mkdir -p fastlane
+            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
+            export APP_STORE_CONNECT_API_KEY_PATH="$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
+          fi
           bundle exec fastlane release
         if: |
           (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
