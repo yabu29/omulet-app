@@ -33,7 +33,7 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install --repo-update")
     
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
@@ -84,7 +84,7 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install --repo-update")
     
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
@@ -136,7 +136,7 @@ platform :ios do
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
-    sh("cd ios && pod install --repo-update")
+    sh("cd ../.. && cd ios && pod install --repo-update")
     
     # Build with verbose logging to identify hang issues
     build_log_path = "/tmp/flutter_build_#{Time.now.to_i}.log"
