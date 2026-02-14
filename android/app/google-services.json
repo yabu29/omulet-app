@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1009785890353",
+    "project_id": "omulet-app",
+    "storage_bucket": "omulet-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009785890353:android:8e1b7a35d7031f2d009710",
+        "android_client_info": {
+          "package_name": "com.example.omulet_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEhWsdsmo_UeBMCgC63z3Fz_me7but5Q8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
