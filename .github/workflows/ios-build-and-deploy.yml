@@ -1,4 +1,4 @@
-name: iOS Build and Deploy
+name: iOS Build Check
 
 on:
   push:
@@ -12,19 +12,9 @@ on:
       - dev
       - main
   workflow_dispatch:
-    inputs:
-      release_type:
-        description: 'Release type (build, testflight, or appstore)'
-        required: true
-        default: 'build'
-        type: choice
-        options:
-          - build
-          - testflight
-          - appstore
 
 jobs:
-  build:
+  build-check:
     runs-on: macos-latest
     
     steps:
@@ -49,88 +39,13 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
       - name: Install CocoaPods dependencies
         working-directory: ios
         run: |
           pod install
 
-      - name: Install fastlane dependencies
-        working-directory: ios
-        run: |
-          bundle install
-
-      # Setup App Store Connect API Key (used by all deployment steps)
-      - name: Setup App Store Connect API Key
-        working-directory: ios
-        env:
-          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-        run: |
-          if [ -n "$APP_STORE_CONNECT_API_KEY_CONTENT" ] && [ -n "$APP_STORE_CONNECT_KEY_ID" ]; then
-            mkdir -p fastlane
-            echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8
-            echo "APP_STORE_CONNECT_API_KEY_PATH=$(pwd)/fastlane/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8" >> $GITHUB_ENV
-          fi
-        if: |
-          (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-
-      - name: Setup Match Environment
-        env:
-          CERTIFICATES_REPO_TOKEN: ${{ secrets.CERTIFICATES_REPO_TOKEN }}
-        run: |
-          echo "GITHUB_ACTIONS=true" >> $GITHUB_ENV
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          # Configure git to use PAT for certificates repo access
-          if [ -n "$CERTIFICATES_REPO_TOKEN" ]; then
-            git config --global url."https://${CERTIFICATES_REPO_TOKEN}@github.com/".insteadOf "https://github.com/"
-          fi
-        if: |
-          (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-
-      # For PRs: build only (no TestFlight upload) - sanity check
+      # Build check: Verify that the app builds successfully (without code signing)
+      # Note: Actual archive and upload are done manually via Xcode
       - name: Build iOS app
-        working-directory: ios
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         run: |
-          bundle exec fastlane build
-        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'build')
-
-      # dev/main branches: Build and upload to TestFlight
-      - name: Upload to TestFlight
-        working-directory: ios
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        run: |
-          bundle exec fastlane beta
-        if: |
-          (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
-          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'testflight'))
-
-      # main branch only: Build and upload to App Store
-      - name: Upload to App Store
-        working-directory: ios
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-        run: |
-          bundle exec fastlane release
-        if: |
-          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) &&
-          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.release_type == 'appstore'))
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-build
-          path: build/ios/ipa/*.ipa
-          retention-days: 30
-        if: always()
+          flutter build ios --release --no-codesign

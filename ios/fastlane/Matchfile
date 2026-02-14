@@ -1,5 +1,8 @@
 # Matchfile for certificate and provisioning profile management
 # Documentation: https://docs.fastlane.tools/actions/match/
+#
+# NOTE: Currently unused - Archive and upload are done manually via Xcode
+# This file is kept for potential future use if automated deployment is needed
 
 # Git repository URL where certificates and provisioning profiles are stored
 # Create a private repository for storing certificates (e.g., omulet-app-certificates)

@@ -1,5 +1,8 @@
 # Appfile for iOS app distribution
 # Documentation: https://docs.fastlane.tools/advanced/#appfile
+#
+# NOTE: Currently unused - Archive and upload are done manually via Xcode
+# This file is kept for potential future use if automated deployment is needed
 
 app_identifier("com.leo.omuee") # The bundle identifier of your app
 apple_id("leoyabuzaki29@gmail.com") # Your Apple email address
