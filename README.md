@@ -1,4 +1,4 @@
-# omulet-app
+# omulet_app
 
 A new Flutter project.
 

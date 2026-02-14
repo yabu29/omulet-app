@@ -1,0 +1,34 @@
+# Matchfile for certificate and provisioning profile management
+# Documentation: https://docs.fastlane.tools/actions/match/
+#
+# NOTE: Currently unused - Archive and upload are done manually via Xcode
+# This file is kept for potential future use if automated deployment is needed
+
+# Git repository URL where certificates and provisioning profiles are stored
+# Create a private repository for storing certificates (e.g., omulet-app-certificates)
+# Replace with your actual repository URL
+git_url("https://github.com/yabu29/omulet-ios-certificates.git")
+
+# Storage mode: git (recommended)
+storage_mode("git")
+
+# Type of certificates to manage: appstore, development, adhoc, enterprise
+type("appstore")
+
+# App identifier
+app_identifier("com.leo.omuee")
+
+# Apple ID
+username("leoyabuzaki29@gmail.com")
+
+# Team ID
+team_id("W92T9A5F6P")
+
+# Optional: Specify keychain name (default: login.keychain)
+# keychain_name("fastlane_tmp_keychain")
+
+# Optional: Skip confirmation prompts
+# skip_confirmation(true)
+
+# Optional: Read-only mode (for CI/CD - prevents creating new certificates)
+# readonly(false)
