@@ -30,6 +30,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate API keys file
+        run: |
+          if [ -z "$YOUTUBE_API_KEY" ]; then
+            echo "YOUTUBE_API_KEY is not set. Creating api_keys.dart from template..."
+            cp lib/config/api_keys.dart.template lib/config/api_keys.dart
+          else
+            echo "Creating api_keys.dart from environment variable..."
+            sed "s/YOUR_YOUTUBE_API_KEY_HERE/$YOUTUBE_API_KEY/g" lib/config/api_keys.dart.template > lib/config/api_keys.dart
+          fi
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
       - name: Run tests
         run: flutter test
         continue-on-error: true

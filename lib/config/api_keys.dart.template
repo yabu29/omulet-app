@@ -1,0 +1,25 @@
+/// YouTube Data API Key
+/// 
+/// このファイルはテンプレートです。
+/// CI/CDやローカル開発時に、このファイルをコピーしてapi_keys.dartを作成し、
+/// 実際のAPI Keyを設定してください。
+/// 
+/// 注意: api_keys.dartは.gitignoreに追加されているため、リポジトリには含まれません。
+/// 実際のAPI Keyは環境変数やFirebase Remote Configから取得することを推奨
+class ApiKeys {
+  // YouTube Data API v3 Key
+  // CI/CD時は環境変数 YOUTUBE_API_KEY から取得されます
+  static const String youtubeDataApiKey = 'YOUR_YOUTUBE_API_KEY_HERE';
+  
+  // API Keyの取得（将来的に環境変数やRemote Configから取得する場合）
+  static String get youtubeApiKey {
+    // 環境変数から取得を試みる
+    // const apiKey = Platform.environment['YOUTUBE_API_KEY'];
+    // if (apiKey != null && apiKey.isNotEmpty) {
+    //   return apiKey;
+    // }
+    
+    // デフォルトのAPI Keyを返す
+    return youtubeDataApiKey;
+  }
+}

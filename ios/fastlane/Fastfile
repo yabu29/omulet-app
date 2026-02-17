@@ -34,6 +34,9 @@ platform :ios do
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
     
+    # Generate API keys file if it doesn't exist
+    sh("cd ../.. && if [ ! -f lib/config/api_keys.dart ]; then if [ -n \"$YOUTUBE_API_KEY\" ]; then sed \"s/YOUR_YOUTUBE_API_KEY_HERE/$YOUTUBE_API_KEY/g\" lib/config/api_keys.dart.template > lib/config/api_keys.dart; else cp lib/config/api_keys.dart.template lib/config/api_keys.dart; fi; fi")
+    
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
     sh("cd ../.. && cd ios && pod install")
@@ -107,6 +110,9 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
+    
+    # Generate API keys file if it doesn't exist
+    sh("cd ../.. && if [ ! -f lib/config/api_keys.dart ]; then if [ -n \"$YOUTUBE_API_KEY\" ]; then sed \"s/YOUR_YOUTUBE_API_KEY_HERE/$YOUTUBE_API_KEY/g\" lib/config/api_keys.dart.template > lib/config/api_keys.dart; else cp lib/config/api_keys.dart.template lib/config/api_keys.dart; fi; fi")
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
@@ -182,6 +188,9 @@ platform :ios do
     # Flutter build with formatted build number
     sh("cd ../.. && flutter clean")
     sh("cd ../.. && flutter pub get")
+    
+    # Generate API keys file if it doesn't exist
+    sh("cd ../.. && if [ ! -f lib/config/api_keys.dart ]; then if [ -n \"$YOUTUBE_API_KEY\" ]; then sed \"s/YOUR_YOUTUBE_API_KEY_HERE/$YOUTUBE_API_KEY/g\" lib/config/api_keys.dart.template > lib/config/api_keys.dart; else cp lib/config/api_keys.dart.template lib/config/api_keys.dart; fi; fi")
     
     # Pre-build CocoaPods to avoid hang during flutter build
     UI.message("Installing CocoaPods dependencies...")
